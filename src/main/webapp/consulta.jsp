@@ -10,25 +10,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Consulta de matrículas</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body class="bg-light">
 
 <div class="container py-4">
 
-    <div class="row mb-3">
-        <div class="col">
-            <h1 class="h3 mb-1">Consulta de matrículas</h1>
-            <p class="text-secondary mb-0">Filtros, listado paginado y exportación de reportes.</p>
+    <div class="card shadow-sm mb-3">
+        <div style="background-color: #1f2c8c;" class="card-header text-white d-flex justify-content-between align-items-center flex-wrap gap-2 px-3 py-3">
+            <div>
+                <h1 class="h3 mb-1"><i class="fa-solid fa-magnifying-glass me-2"></i>Consulta de matrículas</h1>
+                <small>Filtros, listado paginado y exportación de reportes.</small>
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <a class="btn btn-outline-light btn-sm" href="${ctx}/vistas/dashboard.jsp"><i class="fa-solid fa-arrow-left me-1"></i>Volver al panel</a>
+            </div>
         </div>
-        <div class="col-auto d-flex align-items-center gap-2 flex-wrap">
-            <a class="btn btn-outline-secondary btn-sm" href="${ctx}/vistas/dashboard.jsp">Volver al panel</a>
-        </div>
-    </div>
-
-    <div class="card shadow-sm mb-4">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <span class="fw-semibold">Criterios de búsqueda</span>
-        </div>
+   
         <div class="card-body">
             <form method="get" action="${ctx}/ConsultaServlet" class="row g-3" >
                 <input type="hidden" name="page" value="1">
@@ -88,16 +86,18 @@
         </div>
     </div>
 
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
-        <p class="mb-0 small text-secondary">
-            Mostrando ${fn:length(listaMatriculas)} de ${totalRegistros} registro(s)
+    <div class="card shadow-sm">
+
+    <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h2 class="h6 mb-0 text-secondary">Resultados de la consulta</h2>
+        <span class="small text-secondary">Mostrando ${fn:length(listaMatriculas)} de ${totalRegistros} registro(s)
             <c:if test="${totalRegistros > 0}">
                 — página ${paginaActual} de ${totalPaginas} (${tamPagina} por página)
             </c:if>
-        </p>
+        </span>
     </div>
 
-    <div class="card shadow-sm">
+    
         <div class="table-responsive">
             <table class="table table-striped table-hover align-middle mb-0">
                 <thead class="table-dark">
