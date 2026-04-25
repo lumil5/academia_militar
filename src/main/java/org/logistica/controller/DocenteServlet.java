@@ -1,8 +1,11 @@
 package org.logistica.controller;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.logistica.bean.entity.Docente;
 import org.logistica.dao.interfaces.DocenteDAO;
@@ -23,11 +26,73 @@ public class DocenteServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
+        String accion = trimToEmpty(request.getParameter("accion"));
+        if ("editar".equals(accion)) {
+            int id = parseInt(request.getParameter("id"), -1);
+            if (id <= 0) {
+                request.setAttribute("mensaje", "ID de docente no válido para editar.");
+                cargarListado(request, response);
+                return;
+            }
+            Docente docente = dao.buscar(id);
+            if (docente == null) {
+                request.setAttribute("mensaje", "No se encontró el docente solicitado.");
+                cargarListado(request, response);
+                return;
+            }
+            request.setAttribute("docenteEditar", docente);
+            request.setAttribute("abrirModalEditar", true);
+            cargarListado(request, response);
+            return;
+        }
+
+        cargarListado(request, response);
+    }
+
+    private void cargarListado(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String buscar = trimToEmpty(request.getParameter("buscar"));
+        int paginaActual = parseInt(request.getParameter("page"), 1);
+        final int tamPagina = 10;
+        if (paginaActual < 1) {
+            paginaActual = 1;
+        }
+
         List<Docente> lista = dao.listar();
         if (lista == null) {
             lista = Collections.emptyList();
         }
-        request.setAttribute("listaDocentes", lista);
+        if (!buscar.isEmpty()) {
+            final String criterio = buscar.toLowerCase();
+            lista = lista.stream()
+                    .filter(d -> contiene(d.getNombres(), criterio)
+                            || contiene(d.getApellidos(), criterio)
+                            || contiene(d.getDni(), criterio)
+                            || contiene(d.getEspecialidad(), criterio)
+                            || contiene(d.getEstado(), criterio))
+                    .collect(Collectors.toList());
+        }
+
+        int totalRegistros = lista.size();
+        int totalPaginas = totalRegistros == 0 ? 1 : (int) Math.ceil((double) totalRegistros / tamPagina);
+        if (paginaActual > totalPaginas) {
+            paginaActual = totalPaginas;
+        }
+
+        int desde = (paginaActual - 1) * tamPagina;
+        int hasta = Math.min(desde + tamPagina, totalRegistros);
+        List<Docente> paginaLista = totalRegistros == 0 ? Collections.emptyList() : lista.subList(desde, hasta);
+
+        String filtroQuery = buscar.isEmpty() ? ""
+                : "buscar=" + URLEncoder.encode(buscar, StandardCharsets.UTF_8);
+
+        request.setAttribute("buscar", buscar);
+        request.setAttribute("filtroQuery", filtroQuery);
+        request.setAttribute("paginaActual", paginaActual);
+        request.setAttribute("tamPagina", tamPagina);
+        request.setAttribute("totalRegistros", totalRegistros);
+        request.setAttribute("totalPaginas", totalPaginas);
+        request.setAttribute("listaDocentes", paginaLista);
         request.getRequestDispatcher("mantDocentes.jsp").forward(request, response);
     }
 
@@ -123,5 +188,9 @@ public class DocenteServlet extends HttpServlet {
 
     private static String trimToEmpty(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private static boolean contiene(String valor, String criterio) {
+        return valor != null && valor.toLowerCase().contains(criterio);
     }
 }

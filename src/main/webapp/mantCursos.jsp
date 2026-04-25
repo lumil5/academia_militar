@@ -48,9 +48,9 @@ body::before {
 }
 
 .page-wrap {
-	max-width: 1180px;
-	margin: 34px auto;
-	padding: 0 16px;
+	max-width: 100%;
+	margin: 0;
+	padding: 16px;
 }
 
 .main-card {
@@ -272,7 +272,7 @@ body::before {
 				</c:if>
 
 				<div class="form-panel">
-					<form action="${ctx}/CursoServlet" method="post">
+					<form action="${ctx}/CursoServlet" method="post" id="formCurso">
 						<input type="hidden" name="txtIdCurso" id="txtIdCurso">
 
 						<div class="row g-3">
@@ -329,8 +329,7 @@ body::before {
 									<i class="fa-solid fa-pen me-1"></i> Modificar
 								</button>
 
-								<button type="submit" name="accion" value="eliminar" class="btn-block-custom btn-delete"
-									onclick="return validarEliminar();">
+								<button type="button" class="btn-block-custom btn-delete" id="btnAbrirModalEliminarCurso">
 									<i class="fa-solid fa-trash me-1"></i> Eliminar
 								</button>
 
@@ -388,7 +387,7 @@ body::before {
 				</div>
 
 				<div class="footer-actions">
-					<a href="${ctx}/vistas/dashboard.jsp" class="btn-volver">
+					<a href="${ctx}/vistas/inicioDashboard.jsp" class="btn-volver">
 						<i class="fa-solid fa-arrow-left"></i>
 						Volver al Panel
 					</a>
@@ -402,6 +401,46 @@ body::before {
 		</div>
 	</div>
 
+	<div class="modal fade" id="modalEliminarCurso" tabindex="-1" aria-labelledby="modalEliminarCursoLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content border-0 shadow">
+				<div class="modal-header bg-danger text-white">
+					<h5 class="modal-title" id="modalEliminarCursoLabel">
+						<i class="fa-solid fa-triangle-exclamation me-2"></i>Confirmar eliminación
+					</h5>
+					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				</div>
+				<div class="modal-body">
+					<p class="mb-2">Esta acción eliminará el curso seleccionado.</p>
+					<div class="alert alert-danger d-flex align-items-center py-2 mb-2" role="alert">
+						<i class="fa-solid fa-circle-exclamation me-2"></i>
+						<small class="mb-0">Esta acción no se puede deshacer.</small>
+					</div>
+					<p class="mb-2"><strong>Curso:</strong> <span id="nombreCursoEliminar">-</span></p>
+					<label for="confirmacionEliminarCurso" class="form-label small mb-1">
+						Escribe <strong>ELIMINAR</strong> para confirmar:
+					</label>
+					<input type="text"
+						   class="form-control"
+						   id="confirmacionEliminarCurso"
+						   autocomplete="off"
+						   placeholder="ELIMINAR">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+					<form action="${ctx}/CursoServlet" method="post" class="d-inline">
+						<input type="hidden" name="accion" value="eliminar">
+						<input type="hidden" name="txtIdCurso" id="idCursoEliminar">
+						<button type="submit" class="btn btn-danger" id="btnConfirmarEliminarCurso" disabled>
+							<i class="fa-solid fa-trash me-1"></i>Eliminar
+						</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 	<script>
 		function seleccionarCurso(row) {
 			document.getElementById("txtIdCurso").value = row.dataset.id || "";
@@ -416,20 +455,47 @@ body::before {
 			row.classList.add("selected-row");
 		}
 
-		function validarEliminar() {
-			const id = document.getElementById("txtIdCurso").value;
-			if (!id) {
-				alert("Primero selecciona un curso de la tabla.");
-				return false;
-			}
-			return confirm("¿Seguro que deseas eliminar este curso?");
-		}
-
 		function limpiarSeleccion() {
 			document.getElementById("txtIdCurso").value = "";
 			document.getElementById("txtIdDocente").value = "";
 			document.getElementById("txtIdSalon").value = "";
 			document.querySelectorAll(".table-modern tbody tr").forEach(tr => tr.classList.remove("selected-row"));
+		}
+
+		const modalEliminarCursoElement = document.getElementById("modalEliminarCurso");
+		const btnAbrirModalEliminarCurso = document.getElementById("btnAbrirModalEliminarCurso");
+		const idCursoEliminarInput = document.getElementById("idCursoEliminar");
+		const nombreCursoEliminarSpan = document.getElementById("nombreCursoEliminar");
+		const confirmacionEliminarCursoInput = document.getElementById("confirmacionEliminarCurso");
+		const btnConfirmarEliminarCurso = document.getElementById("btnConfirmarEliminarCurso");
+
+		if (modalEliminarCursoElement && btnAbrirModalEliminarCurso) {
+			const modalEliminarCurso = new bootstrap.Modal(modalEliminarCursoElement);
+			const actualizarEstadoBotonEliminarCurso = () => {
+				const valor = (confirmacionEliminarCursoInput.value || "").trim().toUpperCase();
+				btnConfirmarEliminarCurso.disabled = valor !== "ELIMINAR";
+			};
+
+			btnAbrirModalEliminarCurso.addEventListener("click", () => {
+				const id = document.getElementById("txtIdCurso").value;
+				const nombre = document.getElementById("txtNombre").value;
+				if (!id) {
+					alert("Primero selecciona un curso de la tabla.");
+					return;
+				}
+				idCursoEliminarInput.value = id;
+				nombreCursoEliminarSpan.textContent = nombre || "-";
+				confirmacionEliminarCursoInput.value = "";
+				btnConfirmarEliminarCurso.disabled = true;
+				modalEliminarCurso.show();
+				confirmacionEliminarCursoInput.focus();
+			});
+
+			confirmacionEliminarCursoInput.addEventListener("input", actualizarEstadoBotonEliminarCurso);
+			modalEliminarCursoElement.addEventListener("hidden.bs.modal", () => {
+				confirmacionEliminarCursoInput.value = "";
+				btnConfirmarEliminarCurso.disabled = true;
+			});
 		}
 	</script>
 

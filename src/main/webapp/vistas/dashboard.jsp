@@ -395,13 +395,13 @@ body {
 				</div>
 
 				<ul class="menu">
-					<li><a href="dashboard.jsp" class="active"><i class="fa-solid fa-house"></i> Inicio</a></li>
-					<li><a href="../AlumnoServlet"><i class="fa-solid fa-user-graduate"></i> Mantenimiento Alumnos</a></li>
-					<li><a href="../DocenteServlet"><i class="fa-solid fa-chalkboard-user"></i> Mantenimiento Docentes</a></li>
-					<li><a href="../CursoServlet"><i class="fa-solid fa-book"></i> Mantenimiento Cursos</a></li>
-					<li><a href="../MatriculaServlet"><i class="fa-solid fa-clipboard-list"></i> Matrícula</a></li>
-					<li><a href="../RetiroServlet"><i class="fa-solid fa-person-walking-arrow-right"></i> Retiro de Curso</a></li>
-					<li><a href="../ConsultaServlet"><i class="fa-solid fa-magnifying-glass"></i> Consultas</a></li>
+					<li><a href="inicioDashboard.jsp" target="framePrincipal" class="active"><i class="fa-solid fa-house"></i> Inicio</a></li>
+					<li><a href="../AlumnoServlet" target="framePrincipal"><i class="fa-solid fa-user-graduate"></i> Mantenimiento Alumnos</a></li>
+					<li><a href="../DocenteServlet" target="framePrincipal"><i class="fa-solid fa-chalkboard-user"></i> Mantenimiento Docentes</a></li>
+					<li><a href="../CursoServlet" target="framePrincipal"><i class="fa-solid fa-book"></i> Mantenimiento Cursos</a></li>
+					<li><a href="../MatriculaServlet" target="framePrincipal"><i class="fa-solid fa-clipboard-list"></i> Matrícula</a></li>
+					<li><a href="../RetiroServlet" target="framePrincipal"><i class="fa-solid fa-person-walking-arrow-right"></i> Retiro de Curso</a></li>
+					<li><a href="../ConsultaServlet" target="framePrincipal"><i class="fa-solid fa-magnifying-glass"></i> Consultas</a></li>
 				</ul>
 			</div>
 
@@ -414,113 +414,18 @@ body {
 
 		<main class="main-content">
 
-			<div class="topbar">
-				<h1>Panel de Control</h1>
-				<div class="date-box">
-					<i class="fa-regular fa-calendar me-1"></i>
-					Sat Apr 18 00:20:10 PET 2026
-				</div>
-			</div>
-
-			<div class="stats-grid">
-				<div class="stat-card">
-					<div class="icon"><i class="fa-solid fa-chart-line"></i></div>
-					<h6>Promedio Académico</h6>
-					<h2>8.5 <small style="font-size:16px;">/ 10</small></h2>
-				</div>
-
-				<div class="stat-card">
-					<div class="icon"><i class="fa-solid fa-person-military-pointing"></i></div>
-					<h6>Asistencia Táctica</h6>
-					<h2>98%</h2>
-				</div>
-
-				<div class="stat-card">
-					<div class="icon"><i class="fa-solid fa-award"></i></div>
-					<h6>Méritos Acumulados</h6>
-					<h2>12</h2>
-				</div>
-			</div>
-
-			<div class="content-card">
-				<div class="section-title">
-					<h3>Próximos Entrenamientos</h3>
-					<span>Agenda operativa y académica</span>
-				</div>
-
-				<div class="table-responsive">
-					<table class="table table-modern align-middle">
-						<thead>
-							<tr>
-								<th>Fecha</th>
-								<th>Actividad</th>
-								<th>Instructor</th>
-								<th>Estado</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>09/04/2026</td>
-								<td>Práctica de Tiro con Fusil</td>
-								<td>Sgt. Mendoza</td>
-								<td><span class="badge-status badge-pendiente">Pendiente</span></td>
-							</tr>
-							<tr>
-								<td>12/04/2026</td>
-								<td>Entrenamiento de Resistencia Física</td>
-								<td>Tte. Rojas</td>
-								<td><span class="badge-status badge-proceso">En Proceso</span></td>
-							</tr>
-							<tr>
-								<td>15/04/2026</td>
-								<td>Simulación de Campo Táctico</td>
-								<td>Cap. Herrera</td>
-								<td><span class="badge-status badge-completado">Programado</span></td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-
-			<div class="content-card">
-				<div class="section-title">
-					<h3>Accesos Rápidos</h3>
-					<span>Opciones frecuentes del sistema</span>
-				</div>
-
-				<div class="quick-actions">
-					<div class="action-card">
-						<i class="fa-solid fa-user-plus"></i>
-						<h5>Registrar Alumno</h5>
-						<p>Agrega nuevos alumnos al sistema académico.</p>
-						<a href="../AlumnoServlet" class="btn btn-outline-primary btn-sm">Ir</a>
-					</div>
-
-					<div class="action-card">
-						<i class="fa-solid fa-folder-open"></i>
-						<h5>Ver Matrículas</h5>
-						<p>Consulta y administra procesos de matrícula.</p>
-						<a href="../MatriculaServlet" class="btn btn-outline-success btn-sm">Ir</a>
-					</div>
-
-					<div class="action-card">
-						<i class="fa-solid fa-chalkboard-user"></i>
-						<h5>Gestionar Docentes</h5>
-						<p>Administra docentes y sus especialidades.</p>
-						<a href="../DocenteServlet" class="btn btn-outline-warning btn-sm">Ir</a>
-					</div>
-
-					<div class="action-card">
-						<i class="fa-solid fa-chart-column"></i>
-						<h5>Consultas Generales</h5>
-						<p>Revisa reportes y búsquedas del sistema.</p>
-						<a href="../ConsultaServlet" class="btn btn-outline-dark btn-sm">Ir</a>
-					</div>
-				</div>
+			<div class="content-card p-2">
+				<iframe
+					class="w-100 border rounded bg-white"
+					name="framePrincipal"
+					title="Contenido principal"
+					src="inicioDashboard.jsp"
+					height="900">
+				</iframe>
 			</div>
 
 		</main>
 	</div>
-
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

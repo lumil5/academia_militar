@@ -44,9 +44,9 @@ body {
 }
 
 .page-wrap {
-	max-width: 1180px;
-	margin: 40px auto;
-	padding: 0 16px;
+	max-width: 100%;
+	margin: 0;
+	padding: 16px;
 }
 
 .main-card {
@@ -393,12 +393,13 @@ body {
                                                class="btn btn-warning btn-sm">
                                                  <i class="fa fa-edit"></i>
                                                </a>
-											<a href="${ctx}/AlumnoServlet?accion=eliminar&id=${a.idAlumno}"
-											   class="btn-icon btn-delete"
+											<button type="button"
+											   class="btn-icon btn-delete btn-eliminar-alumno"
 											   title="Eliminar"
-											   onclick="return confirm('¿Seguro que deseas eliminar este registro?')">
+											   data-id="${a.idAlumno}"
+											   data-nombre="${fn:escapeXml(a.nombres)} ${fn:escapeXml(a.apellidos)}">
 												<i class="fa-solid fa-trash"></i>
-											</a>
+											</button>
 										</div>
 									</td>
 								</tr>
@@ -409,10 +410,6 @@ body {
 				</div>
 
 				<div class="footer-actions">
-					<a href="${ctx}/vistas/dashboard.jsp" class="btn-volver">
-						<i class="fa-solid fa-arrow-left"></i>
-						Volver al Panel
-					</a>
 
 					<div class="mini-note">
 						Administra, consulta y actualiza la información de los cadetes.
@@ -422,6 +419,79 @@ body {
 			</div>
 		</div>
 	</div>
+
+	<div class="modal fade" id="modalEliminarAlumno" tabindex="-1" aria-labelledby="modalEliminarAlumnoLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content border-0 shadow">
+				<div class="modal-header bg-danger text-white">
+					<h5 class="modal-title" id="modalEliminarAlumnoLabel">
+						<i class="fa-solid fa-triangle-exclamation me-2"></i>Confirmar eliminación
+					</h5>
+					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				</div>
+				<div class="modal-body">
+					<p class="mb-2">Esta acción eliminará al alumno seleccionado.</p>
+					<div class="alert alert-danger d-flex align-items-center py-2 mb-2" role="alert">
+						<i class="fa-solid fa-circle-exclamation me-2"></i>
+						<small class="mb-0">Esta acción no se puede deshacer.</small>
+					</div>
+					<p class="mb-2"><strong>Alumno:</strong> <span id="nombreAlumnoEliminar">-</span></p>
+					<label for="confirmacionEliminarAlumno" class="form-label small mb-1">
+						Escribe <strong>ELIMINAR</strong> para confirmar:
+					</label>
+					<input type="text"
+						   class="form-control"
+						   id="confirmacionEliminarAlumno"
+						   autocomplete="off"
+						   placeholder="ELIMINAR">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+					<form action="${ctx}/AlumnoServlet" method="get" class="d-inline">
+						<input type="hidden" name="accion" value="eliminar">
+						<input type="hidden" name="id" id="idAlumnoEliminar">
+						<button type="submit" class="btn btn-danger" id="btnConfirmarEliminarAlumno" disabled>
+							<i class="fa-solid fa-trash me-1"></i>Eliminar
+						</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+		const modalEliminarAlumnoElement = document.getElementById("modalEliminarAlumno");
+		const idAlumnoEliminarInput = document.getElementById("idAlumnoEliminar");
+		const nombreAlumnoEliminarSpan = document.getElementById("nombreAlumnoEliminar");
+		const confirmacionEliminarAlumnoInput = document.getElementById("confirmacionEliminarAlumno");
+		const btnConfirmarEliminarAlumno = document.getElementById("btnConfirmarEliminarAlumno");
+
+		if (modalEliminarAlumnoElement) {
+			const modalEliminarAlumno = new bootstrap.Modal(modalEliminarAlumnoElement);
+			const actualizarEstadoBotonEliminarAlumno = () => {
+				const valor = (confirmacionEliminarAlumnoInput.value || "").trim().toUpperCase();
+				btnConfirmarEliminarAlumno.disabled = valor !== "ELIMINAR";
+			};
+
+			document.querySelectorAll(".btn-eliminar-alumno").forEach((btn) => {
+				btn.addEventListener("click", () => {
+					idAlumnoEliminarInput.value = btn.dataset.id || "";
+					nombreAlumnoEliminarSpan.textContent = btn.dataset.nombre || "-";
+					confirmacionEliminarAlumnoInput.value = "";
+					btnConfirmarEliminarAlumno.disabled = true;
+					modalEliminarAlumno.show();
+					confirmacionEliminarAlumnoInput.focus();
+				});
+			});
+
+			confirmacionEliminarAlumnoInput.addEventListener("input", actualizarEstadoBotonEliminarAlumno);
+			modalEliminarAlumnoElement.addEventListener("hidden.bs.modal", () => {
+				confirmacionEliminarAlumnoInput.value = "";
+				btnConfirmarEliminarAlumno.disabled = true;
+			});
+		}
+	</script>
 
 </body>
 </html>

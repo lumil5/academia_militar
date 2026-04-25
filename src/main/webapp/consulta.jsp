@@ -14,16 +14,13 @@
 </head>
 <body class="bg-light">
 
-<div class="container py-4">
+<div class="container-fluid py-4 px-3">
 
     <div class="card shadow-sm mb-3">
         <div style="background-color: #1f2c8c;" class="card-header text-white d-flex justify-content-between align-items-center flex-wrap gap-2 px-3 py-3">
             <div>
                 <h1 class="h3 mb-1"><i class="fa-solid fa-magnifying-glass me-2"></i>Consulta de matrículas</h1>
                 <small>Filtros, listado paginado y exportación de reportes.</small>
-            </div>
-            <div class="d-flex align-items-center gap-2 flex-wrap">
-                <a class="btn btn-outline-light btn-sm" href="${ctx}/vistas/dashboard.jsp"><i class="fa-solid fa-arrow-left me-1"></i>Volver al panel</a>
             </div>
         </div>
    
